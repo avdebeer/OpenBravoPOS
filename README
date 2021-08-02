@@ -32,3 +32,339 @@ Please use svn diff to prepare patches.
 * Contact
 
 IRC: #openbravo in freenode
+
+
+
+
+
+
+
+Software installation
+Install Java
+Openbravo POS is an application developed in Java and to execute it you will need the Sun Java Runtime Environment (JRE) 1.6 or greater.
+
+On Windows
+You can install Java from Sun's website.
+
+On Ubuntu
+To install java in Ubuntu make sure to have the multiverse and restricted repositories activated. To do this you can add the following lines to the /etc/apt/sources.list file:
+
+deb http://za.archive.ubuntu.com/ubuntu/ intrepid main restricted
+deb http://za.archive.ubuntu.com/ubuntu/ intrepid multiverse
+Where intrepid is the Ubuntu version you have installed. And after modified you have to update your repository executing:
+
+sudo apt-get update 
+And to install java execute
+
+sudo apt-get install sun-java6-jre sun-java6-fonts
+You can also add the multiverse repository using the system tool Software sources, and install the java packages using the Synaptic package manager.
+
+To verify that the correct version of java is installed the following command can be used:
+
+java -version
+If you have more than one java environment installed in your machine you need to select the Sun java runtime environment (JRE) 1.6 or greater. The following command can be used to list the available java versions:
+
+update-java-alternatives -l
+And to change from one version to another, the following command can be used:
+
+sudo update-java-alternatives -s <JRE Version>
+Download and install Openbravo POS
+Download the latest version of the Openbravo POS from Sourceforge. There are available installers for several operating systems and architectures or as a binary package. There is a description of all the files available for download in the Openbravo POS 2.30 Release notes#How to get Openbravo POS.
+
+The installers are very simple to follow and the binary package just needs to be opened with your favourite uncompressor and extract all files to an empty folder.
+
+Run it!
+The first time Openbravo POS starts and there isn't a database, it display a warning alerting that it has found an empty database. If you click OK, Openbravo POS will create for you the database structure necessary to run.
+
+On Windows
+Installer
+Go to Start -> Applications -> Openbravo POS -> Openbravo POS
+
+Binary package
+Execute the file start.bat just double clicking on it or launch from the command line. You can also create a shortcut to this file and place it in your preferred location: the desktop, the launch bar...
+
+On Linux
+Installer
+In Gnome go to Applications -> Office -> Openbravo POS or just execute openbravopos command in a command line.
+
+Binary Package
+Execute sh start.sh.
+
+In linux you first need to add execution permissions to the files start.sh and configure.sh to do this execute the following commands:
+
+chmod +x start.sh 
+chmod +x configure.sh 
+
+On MacOSX
+Open the Apple Terminal (located at: /Applications/Utilities) and go with the command line to the location the start.sh file is located. Then execute sh start.sh.
+
+Localization packages installation
+If you want to have Openbravo POS in your language you need first to download the localization package suitable for your language. The list of available localization packages and where to download is maintained in the Openbravo POS localization guide.
+
+Localization packages are very simple to install, just uncompress the localization package in the same folder Openbravo POS is installed and restart the application.
+
+Database installation
+Once Openbravo POS is installed you should decide whether you want to run Openbravo POS on the built-in engine or on any of the other database engines supported. Openbravo POS supports five database engines: Apache Derby, MySQL, PostgreSQL, Oracle and HSQLDB.
+
+Openbravo POS since version 2.30 uses by default Apache Derby for data storage. Apache Derby is bundled with the binary package of Openbravo POS and offers the advantage that it doesn't have to be configured, and it is reliable and robust enough for most requirements.
+
+Apache Derby
+Openbravo POS is distributed with the embedded library of Apache Derby so if you plan to use Apache Derby in embedded mode you do not need to download or install anything. Using Embedded mode makes the database single concurrent user. Only one OpenbravoPOS can access it at a time. You need to stop OpenbravoPOS to access the database with IJ, SquirrelSQL, OpenOffice or other tools. If you want to use Apache Derby in client/server mode you need to download and install the full distribution of Apache Derby available from the Apache Derby web site, or install from repository. In client server mode you can access the database concurrently from several applications or workstations.
+
+Derby is called javadb by Sun, and is included in Ubuntu from 7.04 onwards.
+
+sudo apt-get install sun-java6-javadb
+To test access with the Derby command line client, called ij
+
+cd /usr/lib/jvm/java-6-sun/db/bin
+export DERBY_HOME=/usr/lib/jvm/java-6-sun/db/bin
+./ij
+connect 'jdbc:derby:/home/myuser/openbravopos-database;create=true';
+show tables;
+select * from resources;
+An example of a database configuration using Apache Derby as database engine in embedded mode is:
+
+Driver library: derby.jar
+Driver class: org.apache.derby.jdbc.EmbeddedDriver
+URL: jdbc:derby:/home/myuser/openbravopos-database;create=true
+User: yourname
+Password: yourpass
+And in client / server mode:
+
+Driver library: derbyclient.jar
+Driver class: org.apache.derby.jdbc.ClientDriver
+URL: jdbc:derby://localhost:1527/openbravopos-database;create=true
+User: yourname
+Password: yourpass
+Note if you take a working Embedded database directory, such as the default openbravopos-database, and change to accessing it in client / server mode, the user must be APP and password does not matter, unless you set Java security.
+
+User: APP
+Password: whatever-but-not-blank
+An example snip from openbravopos.properties
+
+# your install directory below may vary
+db.driverlib=/opt/openbravopos-2.30/lib/derbyclient.jar
+db.driver=org.apache.derby.jdbc.ClientDriver
+db.URL=jdbc:derby://localhost:1527//home/openbravopos/openbravopos-database
+db.user=APP
+db.password=b
+You need to start the Derby server
+
+# Start Derby in server mode
+export DERBY_HOME=/usr/lib/jvm/java-6-sun/db
+# setup the classpath so Derby knows where to find itself
+/usr/lib/jvm/java-6-sun/db/bin/setNetworkServerCP
+# -h = host  interface to listen on, 0.0.0.0 for all interfaces
+# this means you can access the database from other machines on the network
+# & at the end means spawn this process and return to the prompt
+java -jar /usr/lib/jvm/java-6-sun/db/lib/derbynet.jar start -h 0.0.0.0 &
+# in the derby:// connect string you need to give the full path to the openbravo-database directory
+You also need to ensure derbyclient.jar is available.
+
+On Ubuntu
+In Lucid it can be found in /usr/lib/jvm/java-6-sun/db/lib/derbyclient.jar.
+
+OpenOffice
+Using OpenOffice base enables you to visualize your data, write reports and queries. Be careful if you choose to alter data, you can easily break internal links or sequences between records or tables.
+
+To access your OpenbravoPOS data from OpenOffice, in client server mode
+
+First tell OO where the Derby jar can be found
+
+Tools..Options..Java..Class Path...
+Add Archive
+/usr/lib/jvm/java-6-sun/db/lib/derbyclient.jar
+Then connect to the database
+
+New database
+Connect to an existing database JDBC
+Datasource URL:  derby://localhost:1527//home/openbravopos/openbravopos-database
+JDBC driver class:  org.apache.derby.jdbc.ClientDriver
+File save database file, give it a local name, like openbravopos.odb
+
+Make sure you've started the Derby server, as described above.
+
+To make the tables available to OO Calc
+
+Tools..Options..OpenOffice.org Base..Databases
+New...Database file..Browse..OpenbravoPOS.odb  (if thats what you saved it as above)
+Registered name.. openbravopos (any logical name will do)
+In Calc
+
+Data..Data Pilot..Start
+Data source registered in OpenOffice.org
+Database..OpenbravoPOS (from above)
+Data source (choose a table eg) APP.PRODUCTS
+Type Sheet
+ok
+Data retrieval may take a few moments.
+
+MySQL
+On Windows
+Download MySQL server (essentials package recommended) and install it.
+
+Download MySQL Connector/J, unzip the contents and place it in the same folder where Openbravo POS resides.
+
+Alternatively you can install MySQL Administrator and MySQL Query Browser MySQL GUI Tools Downloads.
+
+On Ubuntu
+Activate the universe repository and run following commands in a terminal:
+
+sudo apt-get install mysql-server libmysql-java
+You can also install MySQL Administrator and MySQL Query Browser:
+
+sudo apt-get install mysql-admin mysql-query-browser
+Connector/J is on /usr/share/java/mysql.jar. You can copy or link it to Openbravo POS' folder.
+
+Usage
+Create an user and a database (schema).
+
+You can check MySQL documentation.
+
+An example of a database configuration using MySQL as database engine is:
+
+Driver library: mysql-connector-java-3.1.6-bin.jar
+Driver class: com.mysql.jdbc.Driver
+URL: jdbc:mysql://localhost:3306/openbravopos
+User: yourname
+Password: yourpass
+Note: if you copy/paste these values, make sure you do not have a blank space at the end of each string, i.e. "com.mysql.jdbc.Driver ", this will cause an error when executing Openbravo.
+
+For used non-Latin symbols, you need add support UTF-8 for MySQL database connect. Example:
+
+URL: jdbc:mysql://localhost:3306/openbravopos?useUnicode=true&characterEncoding=UTF-8&characterSetResults=UTF-8
+PostgreSQL
+To use Openbravo POS with PostgreSQL you must have a PostgreSQL server running and the JDBC driver for PostgreSQL.
+
+On Windows
+Download the server PostgreSQL download and install it.
+
+Download the JDBC driver PostgreSQL JDBC Driver according to your version and install it.
+
+You can also install the PosgreSQL administration tool pgAdminIII.
+
+On Ubuntu
+Ensure you have the universe repository activated and run following commands in a terminal:
+
+sudo apt-get install postgresql-8.2 libpg-java
+You can also install the administrator tool pgAdmin3:
+
+sudo apt-get install pgadmin3
+The JDBC lib is on /usr/share/java/postgresql.jar. You can copy or link it to Openbravo POS' folder.
+
+Usage
+After the database server is installed and running you have to create an empty database for Openbravo POS and a database user with privileges to connect to this database. You can check PostgreSQL documentation.
+
+An example of a database configuration using PostgreSQL as database engine is:
+
+Driver library: /usr/share/java/postgresql-8.0.309.jdbc3.jar    
+Driver class: org.postgresql.Driver  
+URL: jdbc:postgresql://localhost:5432/openbravopos
+User youruser  
+Password: youpass
+Oracle
+To use Openbravo POS with Oracle you must have an Oracle server running and the JDBC driver for Oracle.
+
+
+On Windows
+Download and install Oracle XE and the JDBC Driver.
+
+You can also install to administer and query the database Oracle JDeveloper.
+
+On Ubuntu
+Download and install Oracle XE and the JDBC Driver.
+
+You can also install to administer and query the database Oracle JDeveloper.
+
+Usage
+After the database server is installed and running you have to create an empty database for Openbravo POS and a database user with privileges to connect to this database.
+
+An example of database configuration is:
+
+Driver library: ojdbc14.jar
+Driver class: oracle.jdbc.driver.OracleDriver
+URL: jdbc:oracle:thin:@localhost:1521:xe
+User youruser  
+Password: youpass
+Configuration
+To configure Openbravo POS go to the configuration panel or run the file configuration.bat in windows or configuration.sh in linux. Please be aware that once you restart Openbravo POS, it will tell you that your database is empty and will offer you to create tables for your new database. Click the yes button to allow Openbravo POS to create the tables for you
+
+Database configuration
+
+Openbravo POS configuration.
+The properties related to the database configuration are:
+
+Driver library
+Is the file provided by the database engine vendor that contains the JDBC driver that allows Java programs to communicate with the database. It's usually a file with extension .jar.
+Driver class
+Is the java class name that implements the JDBC driver. This name is also defined by the database engine vendor.
+URL
+Is the connection string that uses JDBC to localize the JDBC the driver and the database.
+User
+The name of the authorized database user.
+Password
+The password of the database user.
+
+Cash register
+
+Openbravo POS configuration
+The properties related to the register cash panel are:
+
+Name
+is the name of the cashier.
+Skin
+provides a few themes which change the look of Openbravo POS.
+Screen
+sets if the application should be in a fullscreen or just in window mode.
+Tickets
+sets in which mode Openbravo POS works. At the present day the following : are available:
+simple, standard or restaurant.
+Customer Display
+sets the way how a customer should see the last ordered item.
+Printer
+is the main printer.
+Printer2
+is an additional printer that could print something additional i.e. an
+order in a kitchen or in a bar.
+Printer3
+is an additional printer that could print something additional i.e. an
+order in a kitchen or in a bar.
+Scale
+sets scales to weigh products.
+Scanner
+sets a barcode scanner to read barcodes.
+Reports Printer
+is a printer that prints reports.
+This feature is available with version 2.30 and later
+
+Receipt printer
+this box must be checked if the Reports Printers is a receipt printer
+Locale
+Here the language of the application is defined. You can define a format of the values displayed like dates, currencies, numbers...
+
+
+
+Openbravo POS configuration
+
+Locale
+You select the language and the country of the application. This selection determines also the default format for currency values and the currency symbol, the default format for dates, times and numeric values.
+Integer, Double, Currency, Percent, Date, Time and Date time
+Here you can overwrite the default type format for each value type defined by the selected Locale. This pattern format follows the specification of the Java platform.
+
+Payment
+You can set a payment gateway to provide a possibility for customers to pay by credit/debit card. At the present day Openbravo POS supports Authorize.Net and SecPay.
+
+
+
+Openbravo POS configuration
+
+The properties related to the payment configuration are:
+
+Commerce ID
+Your ID that you get when you register in a payment gateway provider.
+Commerce password
+Your password to your Commerce ID.
+Payment gateway
+sets the provider that you register in.
+Mag card reader
+sets a device that reads cards
